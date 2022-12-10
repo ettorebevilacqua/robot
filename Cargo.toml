@@ -1,0 +1,65 @@
+[package]
+name = "robot"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+# Barter Ecosystem
+barter = "0.8.5"
+
+
+[dependencies.barter-data]
+version = "0.5.10"
+
+[dependencies.barter-integration]
+version = "0.4.0"
+
+[dependencies.chrono]
+version = "0.4.21"
+features = ["serde"]
+
+[dependencies.futures]
+version = "0.3.21"
+
+[dependencies.parking_lot]
+version = "0.12.1"
+
+[dependencies.prettytable-rs]
+version = "0.8.0"
+
+[dependencies.redis]
+version = "0.21.5"
+
+[dependencies.serde]
+version = "1.0.143"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "1.0.83"
+
+[dependencies.ta]
+version = "0.5.0"
+
+[dependencies.thiserror]
+version = "1.0.32"
+
+[dependencies.tokio]
+version = "1.20.1"
+features = ["full"]
+
+[dependencies.tokio-stream]
+version = "0.1.9"
+features = ["sync"]
+
+[dependencies.tracing]
+version = "0.1.36"
+
+[dependencies.uuid]
+version = "1.2.2"
+features = [
+    "v4",
+    "serde",
+]
