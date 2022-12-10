@@ -16,10 +16,15 @@ use barter::{
     },
     strategy::example::{Config as StrategyConfig, RSIStrategy},
 };
-use barter_data::model::{Candle, DataKind, MarketEvent};
+use barter_data::{
+    builder::Streams,
+    model::{MarketEvent, subscription::{Interval, SubKind},Candle, DataKind},
+    ExchangeId,
+};
 use barter_integration::model::{Exchange, Instrument, InstrumentKind, Market};
 use chrono::Utc;
 use parking_lot::Mutex;
+use tokio_stream::StreamExt;
 use std::{collections::HashMap, fs, sync::Arc};
 use tokio::sync::mpsc;
 use uuid::Uuid;
@@ -38,6 +43,39 @@ async fn main() {
 
     // Create the Market(s) to be traded on (1-to-1 relationship with a Trader)
     let market = Market::new("binance", ("btc", "usdt", InstrumentKind::Spot));
+
+        // Initialise a `PublicTrade`, `Candle` & `OrderBook``MarketStream` for 
+    // `BinanceFuturesUsd`, `Ftx`, `Kraken` & `Coinbase`
+    let streams = Streams::builder()
+        .subscribe_exchange(
+            ExchangeId::Ftx,
+            [
+                ("btc", "usdt", InstrumentKind::FuturePerpetual, SubKind::Trade),
+                ("eth", "usdt", InstrumentKind::FuturePerpetual, SubKind::Trade),
+                ("btc", "usdt", InstrumentKind::Spot, SubKind::Trade),
+                ("eth", "usdt", InstrumentKind::Spot, SubKind::Trade),
+            ],
+        )
+        .subscribe([
+            (ExchangeId::Coinbase, "btc", "usd", InstrumentKind::Spot, SubKind::Trade),
+            (ExchangeId::Coinbase, "eth", "usd", InstrumentKind::Spot, SubKind::Trade),
+            (ExchangeId::Kraken, "xbt", "usd", InstrumentKind::Spot, SubKind::Trade),
+            (ExchangeId::Kraken, "xbt", "usd", InstrumentKind::Spot, SubKind::Candle(Interval::Minute1)),
+            (ExchangeId::BinanceFuturesUsd, "btc", "usdt", InstrumentKind::FuturePerpetual, SubKind::Trade),
+            (ExchangeId::BinanceFuturesUsd, "eth", "usdt", InstrumentKind::FuturePerpetual, SubKind::Trade),
+            (ExchangeId::BinanceFuturesUsd, "btc", "usdt", InstrumentKind::FuturePerpetual, SubKind::OrderBook),
+        ])
+        .init()
+        .await
+        .unwrap();
+
+    // Join all exchange streams into a StreamMap
+    // Note: Use `streams.select(ExchangeId)` to interact with the individual exchange streams!
+    let mut joined_stream = streams.join_map::<MarketEvent>().await;
+
+    while let Some((exchange, event)) = joined_stream.next().await {
+        println!("Exchange: {}, MarketEvent: {:?}", exchange, event);
+    }
 
     // Build global shared-state MetaPortfolio (1-to-1 relationship with an Engine)
     let portfolio = Arc::new(Mutex::new(
@@ -112,7 +150,7 @@ async fn main() {
 
 fn load_json_market_event_candles() -> Vec<MarketEvent> {
     let candles =
-        fs::read_to_string("barter-rs/examples/data/candles_1h.json").expect("failed to read file");
+        fs::read_to_string("/home/etto/prj/cripto/rustt/robot/src/data/candles_1h.json").expect("failed to read file");
 
     let candles =
         serde_json::from_str::<Vec<Candle>>(&candles).expect("failed to parse candles String");
