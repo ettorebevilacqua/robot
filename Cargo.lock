@@ -53,6 +53,27 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
 name = "barter"
+version = "0.1.0"
+dependencies = [
+ "barter 0.8.6",
+ "barter-data",
+ "barter-integration",
+ "chrono",
+ "futures",
+ "parking_lot",
+ "prettytable-rs 0.9.0",
+ "serde",
+ "serde_json",
+ "ta",
+ "thiserror",
+ "tokio",
+ "tokio-stream",
+ "tracing",
+ "uuid",
+]
+
+[[package]]
+name = "barter"
 version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4f6d1bd6987c1b9933bff56cce21f4dbcd4731b6edc3c94d497eb5506efd600"
@@ -206,6 +227,17 @@ dependencies = [
  "time",
  "wasm-bindgen",
  "winapi",
+]
+
+[[package]]
+name = "client"
+version = "0.0.1"
+dependencies = [
+ "barter 0.1.0",
+ "futures",
+ "tokio",
+ "tokio-stream",
+ "tracing",
 ]
 
 [[package]]
@@ -1196,27 +1228,6 @@ dependencies = [
  "untrusted",
  "web-sys",
  "winapi",
-]
-
-[[package]]
-name = "robot"
-version = "0.1.0"
-dependencies = [
- "barter",
- "barter-data",
- "barter-integration",
- "chrono",
- "futures",
- "parking_lot",
- "prettytable-rs 0.9.0",
- "serde",
- "serde_json",
- "ta",
- "thiserror",
- "tokio",
- "tokio-stream",
- "tracing",
- "uuid",
 ]
 
 [[package]]

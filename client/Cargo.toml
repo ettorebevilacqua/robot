@@ -1,0 +1,26 @@
+[package]
+name = "client"
+version = "0.0.1"
+authors = ["Ettore Bevilacqua <ettorebevilacqua@gmail.com>"]
+edition = "2021"
+license = "MIT"
+documentation = "https://docs.rs/barter/"
+repository = "https://github.com/barter-rs/barter-rs"
+readme = "README.md"
+description = "client launcher robot"
+keywords = ["trading", "backtesting", "crypto", "stocks", "investment"]
+categories = ["accessibility", "simulation"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+"barter" = { path = "../barter" }
+
+# Logging
+tracing = "0.1.36"
+
+# Async
+tokio = { version = "1.20.1", features = ["sync"] }
+tokio-stream = { version = "0.1.9", features = ["sync"] }
+futures = "0.3.21"
+
